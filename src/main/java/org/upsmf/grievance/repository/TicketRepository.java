@@ -1,9 +1,8 @@
 package org.upsmf.grievance.repository;
 
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import org.upsmf.grievance.model.Ticket;
 
 @Repository
-public interface TicketRepository extends ElasticsearchRepository<Ticket, String> {
+public interface TicketRepository extends CrudRepository<org.upsmf.grievance.model.Ticket, Long> {
 }
