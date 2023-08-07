@@ -20,21 +20,21 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Ticket save(Ticket ticket) {
-        // validate request
-        // validate OTP
+        // TODO validate request
+        // TODO validate OTP
         // save ticket in postgres
         org.upsmf.grievance.model.Ticket psqlTicket = ticketRepository.save(ticket);
         // covert to ES ticket object
         org.upsmf.grievance.model.es.Ticket esticket = convertToESTicketObj(ticket);
         // save ticket in ES
         esTicketRepository.save(esticket);
-        // send mail
+        // TODO send mail
         return psqlTicket;
     }
 
     private org.upsmf.grievance.model.es.Ticket convertToESTicketObj(Ticket ticket) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateUtil.DEFAULT_DATE_FORMAT);
-        // get user details based on iD
+        // TODO get user details based on iD
         return org.upsmf.grievance.model.es.Ticket.builder()
                 .ticketId(ticket.getId())
                 .firstName(ticket.getFirstName())
