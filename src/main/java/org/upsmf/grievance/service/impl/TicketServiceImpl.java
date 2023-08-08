@@ -91,9 +91,9 @@ public class TicketServiceImpl implements TicketService {
                 .requestType(ticketRequest.getRequestType())
                 .priority(TicketPriority.LOW)
                 .escalatedBy(-1l)
-                .comments(null)
-                .raiserAttachmentURLs(ticketRequest.getAttachmentURls())
-                .assigneeAttachmentURLs(null)
+                //.comments(null)
+                //.raiserAttachmentURLs(ticketRequest.getAttachmentURls())
+                //.assigneeAttachmentURLs(null)
                 .build();
     }
 
@@ -185,9 +185,10 @@ public class TicketServiceImpl implements TicketService {
                 .priority(ticket.getPriority())
                 .escalatedBy(ticket.getEscalatedBy())
                 .escalatedTo(ticket.getEscalatedTo())
-                .comments(ticket.getComments())
-                .raiserAttachmentURLs(ticket.getRaiserAttachmentURLs())
-                .assigneeAttachmentURLs(ticket.getAssigneeAttachmentURLs()).build();
+               // .comments(ticket.getComments())
+                //.raiserAttachmentURLs(ticket.getRaiserAttachmentURLs())
+                //.assigneeAttachmentURLs(ticket.getAssigneeAttachmentURLs())
+                .build();
     }
 
     /**

@@ -92,13 +92,13 @@ public class Ticket {
     @Field(name = "escalated_by")
     private Long escalatedBy = -1L;
 
-    @Field(name = "comments")
-    private List<String> comments;
-
-    @Field(name = "raiser_attachment_urls")
-    private List<String> raiserAttachmentURLs;
-
-    @Field(name = "assignee_attachment_urls")
-    private List<String> assigneeAttachmentURLs;
+//    @Field(name = "comments")
+//    private List<String> comments;
+//
+//    @Field(name = "raiser_attachment_urls")
+//    private List<String> raiserAttachmentURLs;
+//
+//    @Field(name = "assignee_attachment_urls")
+//    private List<String> assigneeAttachmentURLs;
 
 }

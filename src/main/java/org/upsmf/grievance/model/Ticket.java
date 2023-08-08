@@ -1,7 +1,6 @@
 package org.upsmf.grievance.model;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
 import org.upsmf.grievance.model.enums.RequesterType;
 import org.upsmf.grievance.model.enums.TicketPriority;
 import org.upsmf.grievance.model.enums.TicketStatus;
@@ -21,7 +20,7 @@ import java.util.List;
 public class Ticket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "requester_first_name")
@@ -79,12 +78,12 @@ public class Ticket {
     @Column(name = "escalated_by")
     private Long escalatedBy = -1L;
 
-    @Column(name = "comments")
-    private List<String> comments;
-
-    @Column(name = "raiser_attachment_urls")
-    private List<String> raiserAttachmentURLs;
-
-    @Column(name = "assignee_attachment_urls")
-    private List<String> assigneeAttachmentURLs;
+//    @Column(name = "comments")
+//    private List<String> comments;
+//
+//    @Column(name = "raiser_attachment_urls")
+//    private List<String> raiserAttachmentURLs;
+//
+//    @Column(name = "assignee_attachment_urls")
+//    private List<String> assigneeAttachmentURLs;
 }
