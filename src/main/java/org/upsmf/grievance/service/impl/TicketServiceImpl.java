@@ -12,6 +12,7 @@ import org.upsmf.grievance.repository.es.TicketRepository;
 import org.upsmf.grievance.service.TicketService;
 import org.upsmf.grievance.util.DateUtil;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -33,6 +34,7 @@ public class TicketServiceImpl implements TicketService {
      * @return
      */
     @Override
+    @Transactional
     public Ticket save(Ticket ticket) {
         // save ticket in postgres
         org.upsmf.grievance.model.Ticket psqlTicket = ticketRepository.save(ticket);
@@ -51,6 +53,7 @@ public class TicketServiceImpl implements TicketService {
      * @throws Exception
      */
     @Override
+    @Transactional
     public Ticket save(TicketRequest ticketRequest) throws Exception {
         // TODO validate request
         // TODO validate OTP
@@ -100,6 +103,7 @@ public class TicketServiceImpl implements TicketService {
      * @return
      */
     @Override
+    @Transactional
     public Ticket update(UpdateTicketRequest updateTicketRequest) {
         // TODO validate ticket
         // check if the ticket exists
