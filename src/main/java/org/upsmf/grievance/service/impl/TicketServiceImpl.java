@@ -15,7 +15,6 @@ import org.upsmf.grievance.util.DateUtil;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -110,7 +109,7 @@ public class TicketServiceImpl implements TicketService {
     public Ticket update(UpdateTicketRequest updateTicketRequest) {
         // TODO validate ticket
         // check if the ticket exists
-        Optional<Ticket> ticketDetails = getTicketByID(updateTicketRequest.getId());
+        Optional<Ticket> ticketDetails = getTicketDetailsByID(updateTicketRequest.getId());
         Ticket ticket = null;
         if(!ticketDetails.isPresent()) {
             // TODO throw exception
@@ -136,7 +135,7 @@ public class TicketServiceImpl implements TicketService {
         if(id <= 0) {
             throw new RuntimeException("Invalid Ticket ID");
         }
-        Optional<Ticket> ticketDetails = getTicketByID(id);
+        Optional<Ticket> ticketDetails = getTicketDetailsByID(id);
         if(!ticketDetails.isPresent()) {
             throw new RuntimeException("Invalid Ticket ID");
         }
@@ -208,7 +207,7 @@ public class TicketServiceImpl implements TicketService {
      * @param id
      * @return
      */
-    public Optional<Ticket> getTicketByID(long id) {
+    public Optional<Ticket> getTicketDetailsByID(long id) {
         return ticketRepository.findById(id);
     }
 }
