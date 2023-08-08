@@ -4,15 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.upsmf.grievance.dto.FeedbackDto;
 import org.upsmf.grievance.model.es.Feedback;
 import org.upsmf.grievance.model.reponse.FeedbackResponse;
 import org.upsmf.grievance.repository.es.FeedbackRepository;
 import org.upsmf.grievance.service.FeedbackService;
 
+@Service
 public class FeedbackServiceImpl implements FeedbackService {
 
-    @Value("${}")
+    @Value("${es.default.page.size}")
     private int defaultPageSize;
 
     @Autowired
