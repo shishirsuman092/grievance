@@ -10,6 +10,6 @@ import java.util.List;
 @Builder
 public class FeedbackResponse {
 
-    private Integer count;
+    private int count;
     private List<Feedback> data;
 }
