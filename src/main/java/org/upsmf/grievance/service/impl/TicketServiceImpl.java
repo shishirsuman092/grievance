@@ -1,9 +1,9 @@
 package org.upsmf.grievance.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.upsmf.grievance.dto.TicketRequest;
 import org.upsmf.grievance.dto.UpdateTicketRequest;
@@ -17,6 +17,7 @@ import org.upsmf.grievance.repository.AssigneeTicketAttachmentRepository;
 import org.upsmf.grievance.repository.CommentRepository;
 import org.upsmf.grievance.repository.RaiserTicketAttachmentRepository;
 import org.upsmf.grievance.repository.es.TicketRepository;
+import org.upsmf.grievance.service.OtpService;
 import org.upsmf.grievance.service.TicketService;
 import org.upsmf.grievance.util.DateUtil;
 
@@ -45,6 +46,9 @@ public class TicketServiceImpl implements TicketService {
 
     @Autowired
     private RaiserTicketAttachmentRepository raiserTicketAttachmentRepository;
+
+    @Autowired
+    private OtpService otpService;
 
     /**
      *
@@ -96,12 +100,18 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public Ticket save(TicketRequest ticketRequest) throws Exception {
         // TODO validate request
-        // TODO validate OTP
+        // validate OTP
+        boolean isValid = otpService.validateOtp(ticketRequest.getEmail(), ticketRequest.getOtp());
+        if(!isValid) {
+            throw new RuntimeException("Bad Request");
+        }
         // set default value for creating ticket
         Ticket ticket = createTicketWithDefault(ticketRequest);
         // create ticket
-        return saveWithAttachment(ticket, ticketRequest.getAttachmentURls());
-
+        ticket = saveWithAttachment(ticket, ticketRequest.getAttachmentURls());
+        // TODO get email subject and body from db
+        otpService.sendGenericEmail(ticketRequest.getEmail(), "Ticket Created", "You ticket is created with ID "+ticket.getId()+" at "+ticket.getCreatedDate());
+        return ticket;
     }
 
     /**

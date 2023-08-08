@@ -22,5 +22,6 @@ public class TicketRequest {
     private String requestType;
     private String description;
     private List<String> attachmentURls;
+    private String otp;
 
 }
