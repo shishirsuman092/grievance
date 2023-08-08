@@ -1,7 +1,7 @@
-package org.upsmf.grievance.model.request;
+package org.upsmf.grievance.dto;
 
 import lombok.*;
-import org.upsmf.grievance.model.enums.RequesterType;
+import org.upsmf.grievance.enums.RequesterType;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class TicketRequest {
     private String email;
     private String phone;
     private RequesterType userType;
-    private Long assignedToId;
+    private Long cc;
     private String requestType;
     private String description;
     private List<String> attachmentURls;

@@ -1,8 +1,8 @@
 package org.upsmf.grievance.service;
 
 import org.upsmf.grievance.model.Ticket;
-import org.upsmf.grievance.model.request.TicketRequest;
-import org.upsmf.grievance.model.request.UpdateTicketRequest;
+import org.upsmf.grievance.dto.TicketRequest;
+import org.upsmf.grievance.dto.UpdateTicketRequest;
 
 public interface TicketService {
 

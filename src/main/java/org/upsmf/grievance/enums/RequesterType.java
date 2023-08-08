@@ -1,4 +1,4 @@
-package org.upsmf.grievance.model.enums;
+package org.upsmf.grievance.enums;
 
 public enum RequesterType {
 

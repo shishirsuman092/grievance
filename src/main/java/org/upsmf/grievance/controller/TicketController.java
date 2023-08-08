@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.upsmf.grievance.model.Ticket;
 import org.upsmf.grievance.model.reponse.Response;
-import org.upsmf.grievance.model.request.TicketRequest;
-import org.upsmf.grievance.model.request.UpdateTicketRequest;
+import org.upsmf.grievance.dto.TicketRequest;
+import org.upsmf.grievance.dto.UpdateTicketRequest;
 import org.upsmf.grievance.service.TicketService;
 
 @Controller

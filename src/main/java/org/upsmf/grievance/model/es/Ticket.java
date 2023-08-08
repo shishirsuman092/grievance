@@ -4,9 +4,9 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
-import org.upsmf.grievance.model.enums.RequesterType;
-import org.upsmf.grievance.model.enums.TicketPriority;
-import org.upsmf.grievance.model.enums.TicketStatus;
+import org.upsmf.grievance.enums.RequesterType;
+import org.upsmf.grievance.enums.TicketPriority;
+import org.upsmf.grievance.enums.TicketStatus;
 
 import java.util.List;
 
