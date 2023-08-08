@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.upsmf.grievance.model.Ticket;
 import org.upsmf.grievance.model.reponse.Response;
+import org.upsmf.grievance.model.request.UpdateTicketRequest;
 import org.upsmf.grievance.service.TicketService;
 
 @Controller
@@ -21,6 +22,13 @@ public class TicketController {
     @PostMapping("/save")
     public ResponseEntity<Response> save(@RequestBody Ticket ticket) {
         Ticket responseTicket = ticketService.save(ticket);
+        Response response = new Response(HttpStatus.OK.value(), responseTicket);
+        return new ResponseEntity<Response>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<Response> update(@RequestBody UpdateTicketRequest updateTicketRequest) {
+        Ticket responseTicket = ticketService.update(updateTicketRequest);
         Response response = new Response(HttpStatus.OK.value(), responseTicket);
         return new ResponseEntity<Response>(response, HttpStatus.OK);
     }

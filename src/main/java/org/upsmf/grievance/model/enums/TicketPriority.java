@@ -2,7 +2,7 @@ package org.upsmf.grievance.model.enums;
 
 public enum TicketPriority {
 
-    P1(1), P2(2), P3(3);
+    HIGH(1), MEDIUM(2), LOW(3);
 
     private int id;
 

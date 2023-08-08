@@ -86,7 +86,7 @@ public class Ticket {
     private String requestType;
 
     @Field(name = "priority")
-    private TicketPriority priority = TicketPriority.P3;
+    private TicketPriority priority = TicketPriority.LOW;
 
     // if the ticket is escalated by system, value will be -1 else superAdmin ID
     @Field(name = "escalated_by")
