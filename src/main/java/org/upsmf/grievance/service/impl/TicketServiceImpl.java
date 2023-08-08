@@ -15,6 +15,9 @@ import org.upsmf.grievance.util.DateUtil;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -79,7 +82,7 @@ public class TicketServiceImpl implements TicketService {
                 .phone(ticketRequest.getPhone())
                 .email(ticketRequest.getEmail())
                 .requesterType(ticketRequest.getUserType())
-                .assignedToId(ticketRequest.getAssignedToId())
+                .assignedToId(ticketRequest.getCc())
                 .description(ticketRequest.getDescription())
                 .createdDate(currentTimestamp)
                 .updatedDate(currentTimestamp)
@@ -148,9 +151,10 @@ public class TicketServiceImpl implements TicketService {
     private void setUpdateTicket(UpdateTicketRequest updateTicketRequest, Ticket ticket) {
         // TODO check request role and permission
         ticket.setStatus(updateTicketRequest.getStatus());
-        ticket.setAssignedToId(updateTicketRequest.getAssignedTo());
+        ticket.setAssignedToId(updateTicketRequest.getCc());
         ticket.setPriority(updateTicketRequest.getPriority());
-        ticket.setDescription(updateTicketRequest.getDescription());
+        List<String> comments = Collections.singletonList(updateTicketRequest.getComment());
+        ticket.setComments(comments);
     }
 
     /**
