@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.upsmf.grievance.model.Ticket;
 import org.upsmf.grievance.model.reponse.Response;
+import org.upsmf.grievance.model.request.TicketRequest;
 import org.upsmf.grievance.model.request.UpdateTicketRequest;
 import org.upsmf.grievance.service.TicketService;
 
@@ -18,8 +19,13 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping("/save")
-    public ResponseEntity<Response> save(@RequestBody Ticket ticket) {
-        Ticket responseTicket = ticketService.save(ticket);
+    public ResponseEntity<Response> save(@RequestBody TicketRequest ticketRequest) {
+        Ticket responseTicket = null;
+        try {
+            responseTicket = ticketService.save(ticketRequest);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         Response response = new Response(HttpStatus.OK.value(), responseTicket);
         return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
