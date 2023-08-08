@@ -7,7 +7,7 @@ import org.upsmf.grievance.model.es.Ticket;
 
 import java.util.Optional;
 
-@Repository
+@Repository("esTicketRepository")
 public interface TicketRepository extends ElasticsearchRepository<Ticket, String> {
     @Query("{'ticket_id': ?0}")
     Optional<Ticket> findOneByTicketId(long id);

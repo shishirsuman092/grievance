@@ -1,6 +1,7 @@
 package org.upsmf.grievance.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.upsmf.grievance.model.Ticket;
 import org.upsmf.grievance.model.enums.TicketPriority;
@@ -19,9 +20,11 @@ import java.util.Optional;
 public class TicketServiceImpl implements TicketService {
 
     @Autowired
+    @Qualifier("esTicketRepository")
     private TicketRepository esTicketRepository;
 
     @Autowired
+    @Qualifier("ticketRepository")
     private org.upsmf.grievance.repository.TicketRepository ticketRepository;
 
     /**
