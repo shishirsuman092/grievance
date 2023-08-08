@@ -121,6 +121,18 @@ public class TicketServiceImpl implements TicketService {
         return ticket;
     }
 
+    @Override
+    public Ticket getTicketById(long id) {
+        if(id <= 0) {
+            throw new RuntimeException("Invalid Ticket ID");
+        }
+        Optional<Ticket> ticketDetails = getTicketByID(id);
+        if(!ticketDetails.isPresent()) {
+            throw new RuntimeException("Invalid Ticket ID");
+        }
+        return ticketDetails.get();
+    }
+
     /**
      *
      * @param updateTicketRequest

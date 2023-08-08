@@ -11,4 +11,6 @@ public interface TicketService {
     Ticket save(TicketRequest ticketRequest) throws Exception;
 
     Ticket update(UpdateTicketRequest updateTicketRequest);
+
+    Ticket getTicketById(long id);
 }

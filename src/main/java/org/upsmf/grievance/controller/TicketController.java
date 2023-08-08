@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.upsmf.grievance.model.Ticket;
 import org.upsmf.grievance.model.reponse.Response;
 import org.upsmf.grievance.model.request.UpdateTicketRequest;
@@ -29,6 +27,13 @@ public class TicketController {
     @PostMapping("/update")
     public ResponseEntity<Response> update(@RequestBody UpdateTicketRequest updateTicketRequest) {
         Ticket responseTicket = ticketService.update(updateTicketRequest);
+        Response response = new Response(HttpStatus.OK.value(), responseTicket);
+        return new ResponseEntity<Response>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Response> update(@RequestParam(name = "id") long id) {
+        Ticket responseTicket = ticketService.getTicketById(id);
         Response response = new Response(HttpStatus.OK.value(), responseTicket);
         return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
