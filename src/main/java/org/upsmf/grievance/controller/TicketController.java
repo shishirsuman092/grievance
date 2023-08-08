@@ -37,8 +37,9 @@ public class TicketController {
         return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Response> update(@RequestParam(name = "id") long id) {
+    @GetMapping("/info")
+    public ResponseEntity<Response> getTicketById(@RequestParam(value = "id") Long id) {
+        System.out.println("   " +id);
         Ticket responseTicket = ticketService.getTicketById(id);
         Response response = new Response(HttpStatus.OK.value(), responseTicket);
         return new ResponseEntity<Response>(response, HttpStatus.OK);

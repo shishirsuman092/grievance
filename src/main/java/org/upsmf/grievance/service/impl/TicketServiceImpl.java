@@ -92,7 +92,7 @@ public class TicketServiceImpl implements TicketService {
                 .priority(TicketPriority.LOW)
                 .escalatedBy(-1l)
                 .comments(null)
-                .raiserAttachmentURLs(ticketRequest.getAttachmentURls())
+                .raiserAttachmentURLs("")
                 .assigneeAttachmentURLs(null)
                 .build();
     }

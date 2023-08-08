@@ -96,9 +96,9 @@ public class Ticket {
     private List<String> comments;
 
     @Field(name = "raiser_attachment_urls")
-    private List<String> raiserAttachmentURLs;
+    private String raiserAttachmentURLs;
 
     @Field(name = "assignee_attachment_urls")
-    private List<String> assigneeAttachmentURLs;
+    private String assigneeAttachmentURLs;
 
 }
