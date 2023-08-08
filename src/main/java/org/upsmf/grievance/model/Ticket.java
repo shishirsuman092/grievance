@@ -1,7 +1,8 @@
 package org.upsmf.grievance.model;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.upsmf.grievance.enums.RequesterType;
 import org.upsmf.grievance.enums.TicketPriority;
 import org.upsmf.grievance.enums.TicketStatus;
@@ -79,12 +80,15 @@ public class Ticket {
     @Column(name = "escalated_by")
     private Long escalatedBy = -1L;
 
-    @Column(name = "comments")
-    private List<String> comments;
+    @OneToMany(targetEntity = Comments.class, mappedBy = "ticketId", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<Comments> comments;
 
-    @Column(name = "raiser_attachment_urls")
-    private List<String> raiserAttachmentURLs;
+    @OneToMany(targetEntity = RaiserTicketAttachment.class, mappedBy = "ticketId", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<RaiserTicketAttachment> raiserTicketAttachmentURLs;
 
-    @Column(name = "assignee_attachment_urls")
-    private List<String> assigneeAttachmentURLs;
+    @OneToMany(targetEntity = AssigneeTicketAttachment.class, mappedBy = "ticketId", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<AssigneeTicketAttachment> assigneeTicketAttachment;
 }

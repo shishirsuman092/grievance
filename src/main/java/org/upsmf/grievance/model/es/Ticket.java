@@ -8,8 +8,6 @@ import org.upsmf.grievance.enums.RequesterType;
 import org.upsmf.grievance.enums.TicketPriority;
 import org.upsmf.grievance.enums.TicketStatus;
 
-import java.util.List;
-
 @Document(indexName = "ticket", createIndex = false)
 @Getter
 @Setter
@@ -92,13 +90,13 @@ public class Ticket {
     @Field(name = "escalated_by")
     private Long escalatedBy = -1L;
 
-    @Field(name = "comments")
-    private List<String> comments;
+   /* @Field(name = "comments")
+    private List<Comments> comments;
 
     @Field(name = "raiser_attachment_urls")
-    private List<String> raiserAttachmentURLs;
+    private String raiserAttachmentURLs;
 
     @Field(name = "assignee_attachment_urls")
-    private List<String> assigneeAttachmentURLs;
+    private String assigneeAttachmentURLs;*/
 
 }

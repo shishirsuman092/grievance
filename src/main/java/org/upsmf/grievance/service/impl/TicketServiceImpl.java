@@ -1,13 +1,21 @@
 package org.upsmf.grievance.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.upsmf.grievance.model.Ticket;
-import org.upsmf.grievance.enums.TicketPriority;
-import org.upsmf.grievance.enums.TicketStatus;
 import org.upsmf.grievance.dto.TicketRequest;
 import org.upsmf.grievance.dto.UpdateTicketRequest;
+import org.upsmf.grievance.enums.TicketPriority;
+import org.upsmf.grievance.enums.TicketStatus;
+import org.upsmf.grievance.model.AssigneeTicketAttachment;
+import org.upsmf.grievance.model.Comments;
+import org.upsmf.grievance.model.RaiserTicketAttachment;
+import org.upsmf.grievance.model.Ticket;
+import org.upsmf.grievance.repository.AssigneeTicketAttachmentRepository;
+import org.upsmf.grievance.repository.CommentRepository;
+import org.upsmf.grievance.repository.RaiserTicketAttachmentRepository;
 import org.upsmf.grievance.repository.es.TicketRepository;
 import org.upsmf.grievance.service.TicketService;
 import org.upsmf.grievance.util.DateUtil;
@@ -15,7 +23,6 @@ import org.upsmf.grievance.util.DateUtil;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,11 +37,42 @@ public class TicketServiceImpl implements TicketService {
     @Qualifier("ticketRepository")
     private org.upsmf.grievance.repository.TicketRepository ticketRepository;
 
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private AssigneeTicketAttachmentRepository assigneeTicketAttachmentRepository;
+
+    @Autowired
+    private RaiserTicketAttachmentRepository raiserTicketAttachmentRepository;
+
     /**
      *
      * @param ticket
      * @return
      */
+    @Transactional
+    public Ticket saveWithAttachment(Ticket ticket, List<String> attachments) {
+        // save ticket in postgres
+        org.upsmf.grievance.model.Ticket psqlTicket = ticketRepository.save(ticket);
+        // update attachments if present
+        if(attachments != null) {
+            for(String url : attachments) {
+                RaiserTicketAttachment raiserTicketAttachment = RaiserTicketAttachment.builder()
+                        .attachment_url(url)
+                        .ticketId(ticket.getId())
+                        .build();
+                raiserTicketAttachmentRepository.save(raiserTicketAttachment);
+            }
+        }
+        // covert to ES ticket object
+        org.upsmf.grievance.model.es.Ticket esticket = convertToESTicketObj(ticket);
+        // save ticket in ES
+        esTicketRepository.save(esticket);
+        // TODO send mail
+        return psqlTicket;
+    }
+
     @Override
     @Transactional
     public Ticket save(Ticket ticket) {
@@ -62,7 +100,7 @@ public class TicketServiceImpl implements TicketService {
         // set default value for creating ticket
         Ticket ticket = createTicketWithDefault(ticketRequest);
         // create ticket
-        return save(ticket);
+        return saveWithAttachment(ticket, ticketRequest.getAttachmentURls());
 
     }
 
@@ -93,9 +131,6 @@ public class TicketServiceImpl implements TicketService {
                 .requestType(ticketRequest.getRequestType())
                 .priority(TicketPriority.LOW)
                 .escalatedBy(-1l)
-                .comments(null)
-                .raiserAttachmentURLs(ticketRequest.getAttachmentURls())
-                .assigneeAttachmentURLs(null)
                 .build();
     }
 
@@ -120,11 +155,13 @@ public class TicketServiceImpl implements TicketService {
         setUpdateTicket(updateTicketRequest, ticket);
         // update ticket in DB
         ticketRepository.save(ticket);
+        ticket = getTicketById(ticket.getId());
         // check if ticket exists in ES
         Optional<org.upsmf.grievance.model.es.Ticket> esTicketDetails = esTicketRepository.findOneByTicketId(updateTicketRequest.getId());
         org.upsmf.grievance.model.es.Ticket updatedESTicket = convertToESTicketObj(ticket);
         if(esTicketDetails.isPresent()) {
-            updatedESTicket.setId(esTicketDetails.get().getId());
+            // TODO revisit this
+            esTicketRepository.deleteById(esTicketDetails.get().getId());
         }
         esTicketRepository.save(updatedESTicket);
         return ticket;
@@ -152,8 +189,22 @@ public class TicketServiceImpl implements TicketService {
         ticket.setStatus(updateTicketRequest.getStatus());
         ticket.setAssignedToId(updateTicketRequest.getCc());
         ticket.setPriority(updateTicketRequest.getPriority());
-        List<String> comments = Collections.singletonList(updateTicketRequest.getComment());
-        ticket.setComments(comments);
+        // update assignee comments
+        Comments comments = Comments.builder().comment(updateTicketRequest.getComment())
+                        .userId(updateTicketRequest.getRequestedBy())
+                        .ticketId(ticket.getId())
+                        .build();
+        commentRepository.save(comments);
+        // update assignee attachment url
+        if(updateTicketRequest.getAssigneeAttachmentURLs() != null) {
+            for (String url : updateTicketRequest.getAssigneeAttachmentURLs()) {
+                AssigneeTicketAttachment assigneeTicketAttachment = AssigneeTicketAttachment.builder()
+                        .userId(updateTicketRequest.getRequestedBy())
+                        .ticketId(ticket.getId())
+                        .attachment_url(url).build();
+                assigneeTicketAttachmentRepository.save(assigneeTicketAttachment);
+            }
+        }
     }
 
     /**
@@ -163,6 +214,7 @@ public class TicketServiceImpl implements TicketService {
      */
     private org.upsmf.grievance.model.es.Ticket convertToESTicketObj(Ticket ticket) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateUtil.DEFAULT_DATE_FORMAT);
+        ObjectMapper mapper = new ObjectMapper();
         // TODO get user details based on ID
         return org.upsmf.grievance.model.es.Ticket.builder()
                 .ticketId(ticket.getId())
@@ -187,10 +239,10 @@ public class TicketServiceImpl implements TicketService {
                 .requestType(ticket.getRequestType())
                 .priority(ticket.getPriority())
                 .escalatedBy(ticket.getEscalatedBy())
-                .escalatedTo(ticket.getEscalatedTo())
-                .comments(ticket.getComments())
-                .raiserAttachmentURLs(ticket.getRaiserAttachmentURLs())
-                .assigneeAttachmentURLs(ticket.getAssigneeAttachmentURLs()).build();
+                .escalatedTo(ticket.getEscalatedTo()).build();
+                //.comments(ticket.getComments()!=null?ticket.getComments():Collections.EMPTY_LIST)
+                //.raiserAttachmentURLs(ticket.getRaiserTicketAttachmentURLs()!=null?mapper.writeValueAsString(ticket.getRaiserTicketAttachmentURLs()):"")
+                //.assigneeAttachmentURLs(ticket.getAssigneeTicketAttachment()!=null?mapper.writeValueAsString(ticket.getAssigneeTicketAttachment()):"").build();
     }
 
     /**
