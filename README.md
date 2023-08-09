@@ -1,2 +1,2 @@
-# notification-service
-Customised service to send out emails and app notifications
+# grievance-service
+Customised service to create tickets
